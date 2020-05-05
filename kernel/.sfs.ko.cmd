@@ -1,0 +1,1 @@
+cmd_/home/hjeon/sfs/kernel/sfs.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds --build-id  -o /home/hjeon/sfs/kernel/sfs.ko /home/hjeon/sfs/kernel/sfs.o /home/hjeon/sfs/kernel/sfs.mod.o
