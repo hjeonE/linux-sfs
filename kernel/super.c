@@ -6,7 +6,7 @@
 #include <linux/vfs.h>
 
 #include "sfs.h"
-// make file system //
+
 static void sfs_put_super(struct super_block *sb)
 {
 	struct sfs_sb_info *sbi = SFS_SB(sb);
