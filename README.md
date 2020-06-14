@@ -7,6 +7,8 @@ aufs (https://github.com/krinkinmu/aufs), ext2 and minix file systems.
 
 This code was written and tested for Linux kernel 3.15 or before.
 
+## 2020-6-12 trying to update for support over linux kernel verison 5.0.0 or after ##
+
 # On-disk file system layout
 
 - Super Block
