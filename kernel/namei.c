@@ -77,6 +77,7 @@ static struct dentry *sfs_lookup(struct inode *dir, struct dentry *dentry,
 
 	ino = sfs_inode_by_name(dir, &dentry->d_name);
 	if (ino) {
+		printk("[DEBUG] sfs_lookup is called, %s , after that d_add()\n", &dentry->d_name.name);
 		inode = sfs_iget(dir->i_sb, ino);
 		if (IS_ERR(inode)) {
 			pr_err("Cannot read inode %lu", (unsigned long)ino);
@@ -90,6 +91,7 @@ static struct dentry *sfs_lookup(struct inode *dir, struct dentry *dentry,
 static int sfs_create(struct inode *dir, struct dentry *dentry, 
 			umode_t mode, bool excl)
 {
+	printk("[DEBUG] sfs_create() called\n");
 	int err;
 	struct inode *inode;
 

@@ -22,10 +22,11 @@ static inline size_t sfs_dir_entry_offset(size_t pos)
 
 static unsigned sfs_last_byte(struct inode *inode, unsigned long page_nr)
 {
-	unsigned last_byte = PAGE_CACHE_SIZE;
-
+	unsigned last_byte = PAGE_CACHE_SIZE; // 4KB
+	
 	if (page_nr == (inode->i_size >> PAGE_CACHE_SHIFT))
 		last_byte = inode->i_size & (PAGE_CACHE_SIZE - 1);
+	printk("[CHECK VALUE] PAGE_CACHE_SIZE : %d, PAGE_CACHE_SHIFT : %d\n", PAGE_CACHE_SIZE, PAGE_CACHE_SHIFT);
 	return last_byte;
 }
 
@@ -155,6 +156,7 @@ int sfs_add_link(struct dentry *dentry, struct inode *inode)
 	const char *name = dentry->d_name.name;
 	struct page *page = NULL;
 	unsigned long npages = sfs_dir_pages(dir);
+	printk("[DEBUG] sfs_add_link ===> npages : %d <===\n", npages);
 	unsigned long n;
 	char *kaddr, *p;
 	struct sfs_dir_entry *de;
@@ -163,13 +165,14 @@ int sfs_add_link(struct dentry *dentry, struct inode *inode)
 
 	for (n = 0; n <= npages; n++) {
 		char *limit, *dir_end;
+		/* dir = inode struct.. do not confuse */
 		page = sfs_dir_get_page(dir, n);
 		err = PTR_ERR(page);
 		if (IS_ERR(page))
 			goto out;
 		lock_page(page);
-		kaddr = (char *)page_address(page);
-		dir_end = kaddr + sfs_last_byte(dir, n);
+		kaddr = (char *)page_address(page); // get page address
+		dir_end = kaddr + sfs_last_byte(dir, n); 
 		limit = kaddr + PAGE_CACHE_SIZE - sizeof(struct sfs_dir_entry); 
 		for (p = kaddr; p <= limit; p += sizeof(struct sfs_dir_entry)) {
 			de = (struct sfs_dir_entry *) p;

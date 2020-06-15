@@ -33,7 +33,21 @@ void bc_write(int blk_no, int sync);
 #define INODE_LIST_START	(IAM_BLOCK_START+cfg.fs_iam_blocks)
 #define DATA_BLOCK_START	(INODE_LIST_START+cfg.fs_inode_blocks)
 #define INODES_PER_BLOCK	(SFS_BLOCK_SIZE/sizeof(struct sfs_inode))
-
+/*
+	cfg.fs_blocksize = 4k
+	cfg.fs_nblocks = size of device / 4k;
+	BITS_PER_BLOCK = 8 * 4k = 8 * 4096 bytes
+         => in one blk , 8 * 4096 bits can be stored
+	cfg.fs_bam_blocks = (total blk num+BITS_PER_BLOCK-1)/BITS_PER_BLOCK;
+         => e.g. how many "bam" blocks are needed
+	cfg.fs_inode_blocks = (total blk num/4)/INODES_PER_BLOCK;
+         => INODE_PER_BLOCK : how many "struct sfs_inode" can fit into one sfs block
+	 
+	cfg.fs_ninodes = cfg.fs_inode_blocks * INODES_PER_BLOCK;
+	cfg.fs_iam_blocks = (cfg.fs_ninodes+BITS_PER_BLOCK-1)/BITS_PER_BLOCK;
+	cfg.fs_data_start = 1 + cfg.fs_bam_blocks + 
+			cfg.fs_iam_blocks + cfg.fs_inode_blocks;
+*/
 int init_super_block()
 {
 	char buffer[SFS_BLOCK_SIZE];
@@ -157,6 +171,7 @@ int read_block(int blk_no, void *block)
 
 int write_block(int blk_no, void *block)
 {
+	printf("[DEBUG] ===> write_block %d <===\n", blk_no);
 	lseek(cfg.fs_fd, blk_no * SFS_BLOCK_SIZE, SEEK_SET);
 	return write(cfg.fs_fd, block, SFS_BLOCK_SIZE);
 }
