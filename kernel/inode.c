@@ -2,7 +2,6 @@
 #include <linux/buffer_head.h>
 #include <linux/mpage.h>
 #include <linux/slab.h>
-
 #include "sfs.h"
 
 static void sfs_inode_fill(struct sfs_inode_info *si,
@@ -173,6 +172,7 @@ static struct buffer_head *sfs_update_inode(struct inode *inode)
 
 int sfs_write_inode(struct inode *inode, struct writeback_control *wbc)
 {
+        printk("[FUNCTION CALL %s : %s at %d\n",__FILE__,__func__,__LINE__);
 	int err = 0;
 	struct buffer_head *bh;
 
@@ -204,6 +204,23 @@ sfs_writepage(struct page *page, struct writeback_control *wbc)
 static int 
 sfs_writepages(struct address_space *mapping, struct writeback_control *wbc)
 {
+	struct radix_tree_root file_page_tree_root  = mapping->page_tree;   //contains all pages in page cache                                      
+	struct radix_tree_iter iter;            
+	void **slot;            
+	int num_dirty = 0;
+	radix_tree_for_each_slot(slot,&file_page_tree_root,&iter,0){
+	    struct page *page = radix_tree_deref_slot(slot);
+	    if(page!=NULL){
+		char * p[40];
+		printk("[PAGE CONTENTS]\n");
+		int i;
+		for(i = 0; i < 40; i++) {
+			p[i] = __va(page_to_pfn(page) << PAGE_SHIFT) + i;
+			printk("[PAGE] ==> %c <== , ADDRESS :: %x\n", *p[i], p[i]);
+		}                 
+	    }
+	}
+
 	pr_debug("sfs_writepages called\n");
 	return mpage_writepages(mapping, wbc, sfs_get_block);
 }

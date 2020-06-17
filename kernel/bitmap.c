@@ -80,6 +80,8 @@ unsigned long sfs_new_block(struct inode * inode, int *err)
 		block = find_first_zero_bit(
 			(unsigned long *)sbi->s_bam_bh[i]->b_data, 
 			sbi->s_bits_per_block); 
+		printk("[DEBUG] sfs_new_block() ===> blk : %d <===\n",block);
+		printk("[DEBUG] sfs_new_block() ===> bits_per_blk : %d <===\n",sbi->s_bits_per_block);
 		if (block < sbi->s_bits_per_block) {
 			set_bit(block, 
 				(unsigned long *)sbi->s_bam_bh[i]->b_data);
@@ -179,7 +181,9 @@ struct inode *sfs_new_inode(struct inode *dir, umode_t mode, int *err)
 		if (ino < sbi->s_bits_per_block) {
 			set_bit(ino, (unsigned long *)sbi->s_iam_bh[i]->b_data);
 			spin_unlock(&bitmap_lock);
+			printk("[DEBUG] sfs_new_inode()1 ino ==> %d\n", ino);
 			ino += i * sbi->s_bits_per_block;
+			printk("[DEBUG] sfs_new_inode()2 ino ==> %d\n", ino);
 			sbi->s_iam_last = i;
 			mark_buffer_dirty(sbi->s_iam_bh[i]);
 			goto got_it;

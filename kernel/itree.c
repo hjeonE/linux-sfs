@@ -215,7 +215,7 @@ reread:
 	/* Simplest case - block found, no allocation needed */
 	if (!partial) {
 got_it:
-		pr_debug("ino %ld, block %ld -> %d\n", inode->i_ino, 
+		printk("BLOCK MAPPED ===> ino %ld, block %ld -> %d\n", inode->i_ino, 
 			block, block_to_cpu(chain[depth-1].key)); 
 		map_bh(bh, inode->i_sb, block_to_cpu(chain[depth-1].key));
 		/* Clean up and exit */

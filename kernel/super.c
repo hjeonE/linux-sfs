@@ -249,6 +249,7 @@ static struct file_system_type sfs_type = {
 
 static int __init init_sfs_fs(void)
 {
+
 	int ret = sfs_inode_cache_create();
 
 	if (ret != 0) {
@@ -256,6 +257,7 @@ static int __init init_sfs_fs(void)
 		return ret;
 	}
 
+	ret;
 	ret = register_filesystem(&sfs_type);
 	if (ret != 0) {
 		sfs_inode_cache_destroy();
